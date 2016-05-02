@@ -9,10 +9,13 @@ public class Utils : MonoBehaviour {
 	private static Texture2D _staticRectTexture;
     private static GUIStyle _staticRectStyle;
 
+	private static Texture2D _staticRectTextureCenter;
+    private static GUIStyle _staticRectStyleCenter;
+
     private static Rect rect;
  
     // Note that this function is only meant to be called from OnGUI() functions.
-    public static void GUIDrawRect( Rect position, Color color )
+    public static void GUIDrawRect( Rect position, Color color)
     {
         if( _staticRectTexture == null )
         {
@@ -23,15 +26,30 @@ public class Utils : MonoBehaviour {
        	{
             _staticRectStyle = new GUIStyle();
         }
+
+		if( _staticRectTextureCenter == null )
+        {
+            _staticRectTextureCenter = new Texture2D( 1, 1 );
+        }
+ 
+        if( _staticRectStyleCenter == null )
+       	{
+            _staticRectStyleCenter = new GUIStyle();
+        }
  
         _staticRectTexture.SetPixel( 0, 0, color );
        	_staticRectTexture.Apply();
  
         _staticRectStyle.normal.background = _staticRectTexture;
+
+		_staticRectTextureCenter.SetPixel( 0, 0, Color.red );
+       	_staticRectTextureCenter.Apply();
+ 
+		_staticRectStyleCenter.normal.background = _staticRectTextureCenter;
  
         GUI.Box( position, GUIContent.none, _staticRectStyle );
- 
- 
+
+		GUI.Box(new Rect(position.center.x, position.center.y, 4, 4), GUIContent.none, _staticRectStyleCenter);
     }
 
 	public static Vector2 CalculateRectCenter (List<Point> points)
@@ -78,4 +96,9 @@ public class Utils : MonoBehaviour {
 
 		return worldPoint;
 	}
+
+	public static float ConvertInputToScreenSpace (float point)
+	{
+		return (Screen.height - point);
+	} 
 }

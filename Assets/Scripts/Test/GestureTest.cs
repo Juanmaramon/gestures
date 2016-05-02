@@ -78,7 +78,7 @@ public class GestureTest : InteractiveInput {
 				Vector2 center = Utils.CalculateRectCenter(points);
 
 				// Big explosion!
-				scene.CreateBigExplosion(new Vector3(center.x, center.y, 0));
+				scene.CreateBigExplosion(new Vector3(center.x, Utils.ConvertInputToScreenSpace(center.y), 0));
 			}
 
 			// Destroy all sparks in scene

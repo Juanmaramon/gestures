@@ -24,6 +24,7 @@ public class SceneManager : MonoBehaviour {
 	[SerializeField] GameObject sparks;
 	[SerializeField] GameObject explosionMobile;
 	[SerializeField] GameObject explosion;
+	[SerializeField] AudioClip explosionSound;
 
 	#endregion
 
@@ -71,6 +72,7 @@ public class SceneManager : MonoBehaviour {
 	{
 		refExplosion = (GameObject)Instantiate(resultExplosion, Utils.ScreenPointResetZ(center), Quaternion.identity);
 		refExplosion.SetActive(true);
+		AudioSource.PlayClipAtPoint(explosionSound, Utils.ScreenPointResetZ(center));
 
 		StartCoroutine(DestroyExplosion(refExplosion, 2f));
 	}
@@ -81,8 +83,4 @@ public class SceneManager : MonoBehaviour {
 
 		Destroy(explosion);
 	}
-
-
-
-
 }
