@@ -21,7 +21,7 @@ public class GameManager : Singleton<GameManager> {
 
 	public bool _Debug
 	{
-		get { debug = true; return debug; }
+		get { debug = false; return debug; }
 	}
 
 	#endregion

@@ -8,16 +8,29 @@ public class GestureTest : InteractiveInput {
 
 	#region Private Attributes
 
+	// Gesture reconizer list
 	private List<Gesture> trainingSet = new List<Gesture>();
+	// Gesture points list 
 	private List<Point> points = new List<Point>();
 
+	// Stroke id, one for every gesture
 	private int strokeId = -1;
+
+	// Scene logic
+	private SceneManager scene;
+
+	#endregion
+
+	#region Public Attributes
+
 
 	#endregion
 
 	protected override void Awake ()
 	{
 		base.Awake();
+
+		scene = GameObject.Find("SceneManager").GetComponent<SceneManager>();
 	}
 
 	void Start () 
@@ -42,6 +55,9 @@ public class GestureTest : InteractiveInput {
 			//Debug.Log(i + " - " + points[i].X + " - " + points[i].Y);
 			if ((points[i].X != points[i-1].X) || (points[i].Y != points[i-1].Y))
 				differences++;
+			else
+				// Destroy all sparks in scene
+				scene.DestroyFlareSparks();
 		}
 
 		// If there is an input progression, check gesture
@@ -51,6 +67,22 @@ public class GestureTest : InteractiveInput {
 			Result gestureResult = PointCloudRecognizer.Classify(candidate, trainingSet.ToArray());
 
 			Debug.Log(gestureResult.GestureClass + " " + gestureResult.Score);
+
+			// Gesture ok!
+			if (gestureResult.Score > 0.8)
+			{
+				// Correct gesture
+				Debug.Log("Circle");
+
+				// Get center of circle
+				Vector2 center = Utils.CalculateRectCenter(points);
+
+				// Big explosion!
+				scene.CreateBigExplosion(new Vector3(center.x, center.y, 0));
+			}
+
+			// Destroy all sparks in scene
+			scene.DestroyFlareSparks();
 		}
 
 		// Cleanup
@@ -63,6 +95,9 @@ public class GestureTest : InteractiveInput {
 		Debug.Log("begin");
 
 		points.Add(new Point(position.x, -position.y, strokeId));
+
+		// Create flare
+		scene.CreateFlare(position);
 	}
 
 	protected override void MoveInteraction (Vector3 position)
@@ -70,5 +105,11 @@ public class GestureTest : InteractiveInput {
 		Debug.Log("move");
 
 		points.Add(new Point(position.x, -position.y, strokeId));
+
+		// Move flare with input position
+		scene.MoveFlare(position);
+
+		// Creates sparks on input position
+		scene.CreateSpark(position);
 	}
 }
